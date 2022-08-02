@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
+  <title>Admin Panel</title>
+  <script src=https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar ">
+      <div class="logo">
+        <h2 >Brand.</h2>
+      </div>
+      <div class="search">
+        <textarea id="result" placeholder="Speak your question here?">
+        </textarea>
+        <label for="result"><i class="fas-fa-search"></i></label>
+        <button onclick="listenHuman()">click me</button>
+      </div>
+      <i class="fas-fa-bell"></i>
+    </div>
+    <div class="sidebar">
+        <ul>
+            <li>
+                <a href="#">
+                    <i class="fas fa-th-large"></i>
+                    <div>Dashboard</div>
+                </a>
+            </li>
+            <li>
+              <a href="#">
+                  <i class="fas fa-home"></i>
+                  <div>Home</div>
+              </a>
+          </li>
+            <li>
+                <a href="\client">
+                    <i class="fas fa-user"></i>
+                    <div>Client</div>
+                </a>
+            </li>
+            <li>
+              <a href="\analytics">
+                <i class="fas fa-chart-bar"></i>
+                <div>Analytics</div>
+              </a>
+          </li>
+            <li>
+                <a href="\help">
+                    <i class="fas fa-question"></i>
+                    <div>Help</div>
+                </a>
+            </li>
+            <li>
+                <a href="\settings">
+                    <i class="fas fa-cog"></i>
+                    <div>Settings</div>
+                </a>
+            </li>
+        </ul>
+        <form method=post enctype=multipart/form-data>
+          <div class="row">
+            <div class="col-25">
+              <label for="fvalue">file</label>
+            </div>
+            <div class="col-75">
+              <input type="file" id="fvalue" name="file" placeholder="upload file.."><br>
+              <input type=submit value=Upload>
+              Shape is: {{ shape }}<br>
+              columnName is: {{ columnName }}<br>
+              nullValues is: {{ nullValues }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-25">
+              <label for="fvalue">X-Axis</label>
+            </div>
+            <div class="col-75">
+              <input type="text" id="first" name="xaxis" placeholder="X-Axis Value..">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-25">
+              <label for="lvalue">Y-Axis</label>
+            </div>
+            <div class="col-75">
+              <input type="text" id="second" name="yaxis" placeholder="Y-Axis Value..">
+            </div>
+          </div>
+          <div class="col-75">
+            <button type="submit", value=plot>Plot</button>
+          </div>
+          </form>
+    </div>
+    <div class="main">
+      <div class="cards">
+        <div class="card">
+          <div class="card-content">
+            <div class="number"></div>
+            <div class="card-name">Scatter Graph</div>
+          </div>
+          <div class="icon-box">
+            <i class="fas fa-chart-scatter"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <div class="number"></div>
+            <div class="card-name">Bar Graph</div>
+          </div>
+          <div class="icon-box">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <div class="number"></div>
+            <div class="card-name">Line Graph</div>
+          </div>
+          <div class="icon-box">
+            <i class="fas fa-chart-line"></i>
+          </div>
+        </div>
+      </div>
+      <div class="charts">
+        <div class="scatter_chart">
+          <h2>Scatter Chart</h2>
+          <canvas id="scatterChart"></canvas>
+        </div>
+        <div class="bar_chart"> 
+          <h2>Bar Chart</h2>
+          <canvas id="barChart"></canvas>
+        </div>
+        <div class="line_chart">
+          <h2>Line Chart</h2>
+          <canvas id="lineChart"></canvas> 
+        </div>
+  </div>
+  {% block body %} {% endblock  %}
+  <script src="{{ url_for('static',filename='styles/charts.js') }}"> </script> 
+
+  <script> 
+            var X = "{{ X |safe }}";
+            var Y = "{{ Y |safe }}";
+            Charts(X,Y);
+  </script>
+  <script>
+            function listenHuman()
+            {
+              $.ajax({
+                
+                type : "POST",
+                url : 'http://127.0.0.1:5000/search',
+           success: function(data){
+                        $("#result").html(data.result);
+                        document.getElementById('first').value = data.result_first
+                        document.getElementById('second').value = data.result_second
+                    }
+              })
+              
+            }
+  </script>
+</body>
+</html>
